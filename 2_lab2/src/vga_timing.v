@@ -11,13 +11,15 @@
 // using Verilog-2001 syntax.
 
  module vga_timing (
-  output reg [10:0] vcount = 11'b0,                    // vertical count
-  output reg vsync = 1'b0,                            // vertical sync
-  output reg vblnk = 1'b0,                            // vertical blink
-  output reg [10:0] hcount = 11'b0,                    // horizontal count
-  output reg hsync = 1'b0,                            // horizontal sync
-  output reg hblnk = 1'b0,                            // horizontal blink
-  input wire pclk                               // Peripheral Clock
+  output reg [10:0] vcount,                             // vertical count
+  output reg vsync,                                     // vertical sync
+  output reg vblnk,                                     // vertical blink
+  output reg [10:0] hcount,                             // horizontal count
+  output reg hsync,                                     // horizontal sync
+  output reg hblnk,                                     // horizontal blink
+
+  input wire pclk,                                      // Peripheral Clock
+  input wire rst                                        // Synchrous reset
   );
   
   reg [10:0] vcount_nxt;
@@ -43,15 +45,31 @@
   // Describe the actual circuit for the assignment.
   // Video timing controller set for 800x600@60fps
   // using a 40 MHz pixel clock per VESA spec.
+ 
+//  uncomment for tesbench!!!  
+//   initial begin
+//     vcount = 11'b0;
+//     hcount = 11'b0;
+//   end
   
   // next counters logic
 always@(posedge pclk) begin
-    hcount <= hcount_nxt;
-    vcount <= vcount_nxt;
-    hsync <= hsync_nxt;
-    vsync <= vsync_nxt;
-    hblnk <= hblnk_nxt;
-    vblnk <= vblnk_nxt;
+    if(rst) begin
+        hcount <= 1'b0;
+        vcount <= 1'b0;
+        hsync  <= 1'b0;
+        vsync  <= 1'b0;
+        hblnk  <= 11'b0;
+        vblnk  <= 11'b0;
+    end
+    else begin
+        hcount <= hcount_nxt;
+        vcount <= vcount_nxt;
+        hsync  <= hsync_nxt;
+        vsync  <= vsync_nxt;
+        hblnk  <= hblnk_nxt;
+        vblnk  <= vblnk_nxt;       
+    end
 end
 
 // next horizontal counter
@@ -106,6 +124,5 @@ always@* begin
         hblnk_nxt = 1;
     else 
         hblnk_nxt = 0; 
-    end
-    
+    end   
 endmodule

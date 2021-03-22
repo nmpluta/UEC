@@ -12,6 +12,7 @@
 
 module vga_example (
   input wire clk,
+  input wire rst,                         // U17 button - reset <-- look to vga_example.xdc
   output wire vs,
   output wire hs,
   output wire [3:0] r,
@@ -93,7 +94,9 @@ module vga_example (
     .hcount(hcount),
     .hsync(hsync),
     .hblnk(hblnk),
-    .pclk(pclk)
+
+    .pclk(pclk),
+    .rst(rst)
   );
 
   // Instantiate the draw_background module, which is
@@ -106,6 +109,7 @@ module vga_example (
 
   draw_background my_draw_background(
     .pclk(pclk),
+    .rst(rst),
 
     //input
     .vcount_in(vcount),
@@ -136,6 +140,7 @@ module vga_example (
 
   draw_react my_draw_react(
     .pclk(pclk),
+    .rst(rst),
 
     //input
     .vcount_in(vcount_b),

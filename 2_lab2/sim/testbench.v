@@ -18,6 +18,7 @@ module testbench;
   // Then, instantiate the design to be tested.
 
   reg clk;
+  reg rst;
   wire pclk_mirror;
   wire vs, hs;
   wire [3:0] r, g, b;
@@ -26,6 +27,7 @@ module testbench;
   
   vga_example my_example (
     .clk(clk),
+    .rst(rst),
     .vs(vs),
     .hs(hs),
     .r(r),
