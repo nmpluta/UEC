@@ -18,9 +18,13 @@ module vga_example (
   output wire [3:0] r,
   output wire [3:0] g,
   output wire [3:0] b,
-  output wire pclk_mirror
+  output wire pclk_mirror,
+
+  inout wire ps2_clk,
+  inout wire ps2_data
   );
 
+/*
   // Converts 100 MHz clk into 40 MHz pclk.
   // This uses a vendor specific primitive
   // called MMCME2, for frequency synthesis.
@@ -35,7 +39,7 @@ module vga_example (
   (* ASYNC_REG = "TRUE" *)
   reg [7:0] safe_start = 0;
 
-/*
+
   IBUF clk_ibuf (.I(clk),.O(clk_in));
 
   MMCME2_BASE #(
@@ -68,12 +72,17 @@ module vga_example (
 
   BUFGCE clk_out_bufgce (.I(clk_out),.CE(safe_start[7]),.O(pclk));
 */
-
-    clk_wiz_0 my_clk_wiz_0(
-        .clk(clk),
-        .clk40Mhz(pclk),
-        .reset(rst)
-    );
+  wire pclk;
+  wire mouse_clk;
+  wire locked;
+  
+  clk_wiz_0 my_clk_wiz_0(
+      .clk(clk),
+      .clk40Mhz(pclk),
+      .clk100Mhz(mouse_clk),
+      .locked(locked),
+      .reset(rst)
+  );
 
   // Mirrors pclk on a pin for use by the testbench;
   // not functionally required for this design to work.
@@ -137,10 +146,23 @@ module vga_example (
     .rgb_out(rgb_b)
   );
 
+  // Instantiate the MouseCtl module, which is
+  // the module you are using for this lab.
+  wire [11:0] xpos_m, ypos_m;
+
+    MouseCtl my_MouseCtl(
+    .clk(mouse_clk),
+  
+    .ps2_clk(ps2_clk),
+    .ps2_data(ps2_data),
+
+    .xpos(xpos_m),
+    .ypos(ypos_m)
+  );
+
 
   // Instantiate the draw_react module, which is
   // the module you are designing for this lab.
-
   wire [10:0] vcount_r, hcount_r;
   wire vsync_r, hsync_r;
   wire vblnk_r, hblnk_r;
@@ -150,6 +172,10 @@ module vga_example (
     .pclk(pclk),
     .rst(rst),
 
+    // input x, y position of the mouse
+    .xpos(xpos_m),
+    .ypos(ypos_m),
+
     //input
     .vcount_in(vcount_b),
     .vsync_in(vsync_b),
@@ -158,6 +184,7 @@ module vga_example (
     .hsync_in(hsync_b),
     .hblnk_in(hblnk_b),
     .rgb_in(rgb_b),
+
 
     //output
     .vcount_out(vcount_r),

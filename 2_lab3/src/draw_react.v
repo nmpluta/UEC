@@ -14,6 +14,9 @@
     input wire pclk,                                  // Peripheral Clock
     input wire rst,                                   // Synchrous reset
 
+    input wire [11:0] xpos,
+    input wire [11:0] ypos,
+
     input wire [10:0] vcount_in,                      // input vertical count
     input wire vsync_in,                              // input vertical sync
     input wire vblnk_in,                              // input vertical blink
@@ -33,8 +36,8 @@
 
 
   // Parameters
-  localparam X_RECT       = 100;
-  localparam Y_RECT       = 100;
+  // localparam X_RECT       = 100;
+  // localparam Y_RECT       = 100;
   localparam WIDTH_RECT   = 50;
   localparam HEIGHT_RECT  = 50;
   localparam [11:0] RGB_RECT    = 12'h8_f_8;
@@ -64,8 +67,8 @@
       vcount_out <= vcount_in;
 
       // rectangle generator
-      if (hcount_in >= X_RECT && hcount_in <= X_RECT + WIDTH_RECT 
-        && vcount_in >= Y_RECT && vcount_in <= Y_RECT + HEIGHT_RECT) rgb_out <= RGB_RECT; 
+      if (hcount_in >= xpos && hcount_in <= xpos + WIDTH_RECT 
+        && vcount_in >= ypos && vcount_in <= ypos + HEIGHT_RECT) rgb_out <= RGB_RECT; 
       else 
         rgb_out <= rgb_in;  
     end

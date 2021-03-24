@@ -70,7 +70,7 @@ module clk_wiz_0_clk_wiz
 
  (// Clock in ports
   // Clock out ports
-  output        clk100Mhza,
+  output        clk100Mhz,
   output        clk40Mhz,
   // Status and control signals
   input         reset,
@@ -152,7 +152,7 @@ wire clk_in2_clk_wiz_0;
    (
     .CLKFBOUT            (clkfbout_clk_wiz_0),
     .CLKFBOUTB           (clkfboutb_unused),
-    .CLKOUT0             (clk100Mhza_clk_wiz_0),
+    .CLKOUT0             (clk100Mhz_clk_wiz_0),
     .CLKOUT0B            (clkout0b_unused),
     .CLKOUT1             (clk40Mhz_clk_wiz_0),
     .CLKOUT1B            (clkout1b_unused),
@@ -207,14 +207,14 @@ wire clk_in2_clk_wiz_0;
 
 
   BUFGCE clkout1_buf
-   (.O   (clk100Mhza),
+   (.O   (clk100Mhz),
     .CE  (seq_reg1[7]),
-    .I   (clk100Mhza_clk_wiz_0));
+    .I   (clk100Mhz_clk_wiz_0));
 
   BUFH clkout1_buf_en
-   (.O   (clk100Mhza_clk_wiz_0_en_clk),
-    .I   (clk100Mhza_clk_wiz_0));
-  always @(posedge clk100Mhza_clk_wiz_0_en_clk or posedge reset_high) begin
+   (.O   (clk100Mhz_clk_wiz_0_en_clk),
+    .I   (clk100Mhz_clk_wiz_0));
+  always @(posedge clk100Mhz_clk_wiz_0_en_clk or posedge reset_high) begin
     if(reset_high == 1'b1) begin
 	    seq_reg1 <= 8'h00;
     end
@@ -243,9 +243,6 @@ wire clk_in2_clk_wiz_0;
   
     end
   end
-
-
-
 
 
 endmodule

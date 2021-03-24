@@ -50,6 +50,12 @@ read_verilog {
     src/clk_wiz_0.v
 }
 
+read_vhdl {
+    src/MouseCtl.vhd
+    src/Ps2Interface.vhd
+    src/MouseDisplay.vhd
+}
+
 add_files -fileset sim_1 {
     sim/testbench.v
     sim/tiff_writer.v
