@@ -97,6 +97,29 @@ module vga_example (
     .S(1'b0)
   );
 
+  // lock_reset 
+  wire rst_lock;
+
+  lock_reset my_lock_reset(
+    .lowest_freq_clk(pclk),
+    .locked(locked),
+    .rst_out(rst_lock)
+  );
+
+  // 2 inverters in a row for slight delay
+  wire rst_inv;
+  not_gate inverter_1(
+    .in_data(rst_lock),
+    .out_data(rst_inv)
+  );
+
+  wire rst_out;
+  not_gate inverter_2(
+    .in_data(rst_inv),
+    .out_data(rst_out)
+  );
+
+  
   // Instantiate the vga_timing module, which is
   // the module you are designing for this lab.
 
@@ -113,7 +136,7 @@ module vga_example (
     .hblnk(hblnk),
 
     .pclk(pclk),
-    .rst(rst)
+    .rst(rst_out)
   );
 
   // Instantiate the draw_background module, which is
@@ -126,7 +149,7 @@ module vga_example (
 
   draw_background my_draw_background(
     .pclk(pclk),
-    .rst(rst),
+    .rst(rst_out),
 
     //input
     .vcount_in(vcount),
@@ -166,7 +189,7 @@ module vga_example (
 
   dff my_dff(
     .pclk(pclk),
-    .rst(rst),
+    .rst(rst_out),
 
     .xpos_in(xpos_m),
     .ypos_in(ypos_m),
@@ -183,7 +206,7 @@ module vga_example (
 
   draw_react my_draw_react(
     .pclk(pclk),
-    .rst(rst),
+    .rst(rst_out),
 
     // input x, y position of the mouse through dff
     .xpos(xpos_dff),
@@ -211,13 +234,12 @@ module vga_example (
 
   // Instantiate the MouseDisplay module, which is
   // the module you are using for this lab.
-  wire [10:0] vcount_md, hcount_md;
   wire [3:0] rgb_red, rgb_green, rgb_blue;
 
     MouseDisplay my_MouseDisplay(
     .pixel_clk(pclk),
-    .xpos(xpos_m),
-    .ypos(ypos_m),
+    .xpos(xpos_dff),
+    .ypos(ypos_dff),
     .hcount({1'b0, hcount_r}),
     .vcount({1'b0, vcount_r}),
     .blank(vblnk_r||hblnk_r),

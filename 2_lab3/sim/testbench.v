@@ -52,9 +52,13 @@ module testbench;
   initial
   begin
     rst = 0;
-    #10;
+    #20;
     rst = 1;
-    #10;
+    #50;
+    rst = 0;
+    #1000;
+    rst = 1;
+    #50;
     rst = 0;
   end
 
