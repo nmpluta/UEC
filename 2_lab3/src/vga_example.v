@@ -150,7 +150,7 @@ module vga_example (
   // the module you are using for this lab.
   wire [11:0] xpos_m, ypos_m;
 
-    MouseCtl my_MouseCtl(
+  MouseCtl my_MouseCtl(
     .clk(mouse_clk),
   
     .ps2_clk(ps2_clk),
@@ -160,6 +160,19 @@ module vga_example (
     .ypos(ypos_m)
   );
 
+  // Instantiate the dff (data flip flip) module, which is
+  // the module you are designing for this lab.
+  wire [11:0] xpos_dff, ypos_dff;
+
+  dff my_dff(
+    .pclk(pclk),
+    .rst(rst),
+
+    .xpos_in(xpos_m),
+    .ypos_in(ypos_m),
+    .xpos_out(xpos_dff),
+    .ypos_out(ypos_dff)
+  );
 
   // Instantiate the draw_react module, which is
   // the module you are designing for this lab.
@@ -172,9 +185,9 @@ module vga_example (
     .pclk(pclk),
     .rst(rst),
 
-    // input x, y position of the mouse
-    .xpos(xpos_m),
-    .ypos(ypos_m),
+    // input x, y position of the mouse through dff
+    .xpos(xpos_dff),
+    .ypos(ypos_dff),
 
     //input
     .vcount_in(vcount_b),
@@ -196,11 +209,33 @@ module vga_example (
     .rgb_out(rgb_r)
   );
 
+  // Instantiate the MouseDisplay module, which is
+  // the module you are using for this lab.
+  wire [10:0] vcount_md, hcount_md;
+  wire [3:0] rgb_red, rgb_green, rgb_blue;
+
+    MouseDisplay my_MouseDisplay(
+    .pixel_clk(pclk),
+    .xpos(xpos_m),
+    .ypos(ypos_m),
+    .hcount({1'b0, hcount_r}),
+    .vcount({1'b0, vcount_r}),
+    .blank(vblnk_r||hblnk_r),
+
+    .red_in(rgb_r[11:8]),
+    .green_in(rgb_r[7:4]),
+    .blue_in(rgb_r[3:0]),  
+
+    .red_out(rgb_red),
+    .green_out(rgb_green),
+    .blue_out(rgb_blue)
+  );
+
     // Just pass these through.
     assign hs = hsync_r;
     assign vs = vsync_r;
-    assign r  = rgb_r[11:8];
-    assign g  = rgb_r[7:4];
-    assign b  = rgb_r[3:0];
+    assign r  = rgb_red;
+    assign g  = rgb_green;
+    assign b  = rgb_blue;
     
 endmodule

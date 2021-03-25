@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- mouse_displayer.vhd
 ------------------------------------------------------------------------
--- Author : Ulrich Zoltán
+-- Author : Ulrich Zoltï¿½n
 --          Copyright 2006 Digilent, Inc.
 ------------------------------------------------------------------------
 -- Software version : Xilinx ISE 7.1.04i
@@ -104,11 +104,11 @@ port (
 
    hcount   : in std_logic_vector(11 downto 0);
    vcount   : in std_logic_vector(11 downto 0);
-   --blank    : in std_logic; -- if VGA blank is used
+   blank    : in std_logic; -- if VGA blank is used
 
-   --red_in   : in std_logic_vector(3 downto 0); -- if VGA signal pass-through is used
-   --green_in : in std_logic_vector(3 downto 0);
-   --blue_in  : in std_logic_vector(3 downto 0);
+   red_in   : in std_logic_vector(3 downto 0); -- if VGA signal pass-through is used
+   green_in : in std_logic_vector(3 downto 0);
+   blue_in  : in std_logic_vector(3 downto 0);
    
    enable_mouse_display_out : out std_logic;
 
@@ -229,7 +229,7 @@ enable_mouse_display_out <= enable_mouse_display;
    begin
       if(rising_edge(pixel_clk)) then
          -- if in visible screen
---       if(blank = '0') then
+         if(blank = '0') then
             -- in display is enabled
             if(enable_mouse_display = '1') then
                -- white pixel of cursor
@@ -244,24 +244,24 @@ enable_mouse_display_out <= enable_mouse_display;
                   blue_out <= (others => '0');
                -- transparent pixel of cursor
                -- let input pass to output
---               else
---                  red_out <= red_in;
---                  green_out <= green_in;
---                  blue_out <= blue_in;
+               else
+                  red_out <= red_in;
+                  green_out <= green_in;
+                  blue_out <= blue_in;
                end if;
             -- cursor display is not enabled
             -- let input pass to output.
---          else
---               red_out <= red_in;
---               green_out <= green_in;
---               blue_out <= blue_in;
+            else
+               red_out <= red_in;
+               green_out <= green_in;
+               blue_out <= blue_in;
             end if;
          -- not in visible screen, black outputs.
---       else
---            red_out <= (others => '0');
---            green_out <= (others => '0');
---            blue_out <= (others => '0');
---      end if;
+         else
+            red_out <= (others => '0');
+            green_out <= (others => '0');
+            blue_out <= (others => '0');
+         end if;
       end if;
    end process;
 

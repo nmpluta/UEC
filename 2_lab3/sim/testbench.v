@@ -48,6 +48,17 @@ module testbench;
     .ydim(16'd628)
   );
 
+
+  initial
+  begin
+    rst = 0;
+    #10;
+    rst = 1;
+    #10;
+    rst = 0;
+  end
+
+
   // Describe a process that generates a clock
   // signal. The clock is 100 MHz.
 

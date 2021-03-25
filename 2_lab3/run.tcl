@@ -48,6 +48,8 @@ read_verilog {
 
     src/clk_wiz_0_clk_wiz.v
     src/clk_wiz_0.v
+
+    src/dff.v
 }
 
 read_vhdl {
@@ -67,6 +69,7 @@ update_compile_order -fileset sim_1
 
 if {[lindex $argv 0] == "simulation"} {
     launch_simulation
+    add_wave {{/testbench/my_example/my_clk_wiz_0}} 
     start_gui
 } else {
     launch_runs synth_1 -jobs 8
