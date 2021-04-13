@@ -34,6 +34,7 @@
     output reg [11:0] rgb_out
   );
 
+  reg [11:0] rgb_out_nxt;
 
   // Parameters
   // localparam X_RECT       = 100;
@@ -66,11 +67,17 @@
       hcount_out <= hcount_in;
       vcount_out <= vcount_in;
 
-      // rectangle generator
-      if (hcount_in >= xpos && hcount_in <= xpos + WIDTH_RECT 
-        && vcount_in >= ypos && vcount_in <= ypos + HEIGHT_RECT) rgb_out <= RGB_RECT; 
-      else 
-        rgb_out <= rgb_in;  
+      rgb_out <= rgb_out_nxt;
     end
+  end
+      // rectangle generator
+  always @* begin
+    if (vblnk_in || hblnk_in) begin
+          rgb_out_nxt = 12'h0_0_0;
+    end
+    if (hcount_in >= xpos && hcount_in <= xpos + WIDTH_RECT 
+        && vcount_in >= ypos && vcount_in <= ypos + HEIGHT_RECT) rgb_out_nxt <= RGB_RECT; 
+    else 
+      rgb_out_nxt <= rgb_in;  
   end
 endmodule
