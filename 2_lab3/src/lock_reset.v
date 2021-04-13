@@ -15,7 +15,7 @@ module lock_reset (
     output reg rst_out                                     
 );
 
-    always @(negedge locked or posedge lowest_freq_clk) begin
+    always @(negedge locked or negedge lowest_freq_clk) begin
         if(!locked) begin
             rst_out <= 1'b1;
         end

@@ -51,7 +51,6 @@ read_verilog {
 
     src/dff.v
     src/lock_reset.v
-    src/not_gate.v
 }
 
 read_vhdl {

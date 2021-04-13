@@ -105,20 +105,6 @@ module vga_example (
     .locked(locked),
     .rst_out(rst_lock)
   );
-
-  // 2 inverters in a row for slight delay
-  wire rst_inv;
-  not_gate inverter_1(
-    .in_data(rst_lock),
-    .out_data(rst_inv)
-  );
-
-  wire rst_out;
-  not_gate inverter_2(
-    .in_data(rst_inv),
-    .out_data(rst_out)
-  );
-
   
   // Instantiate the vga_timing module, which is
   // the module you are designing for this lab.
@@ -136,7 +122,7 @@ module vga_example (
     .hblnk(hblnk),
 
     .pclk(pclk),
-    .rst(rst_out)
+    .rst(rst_lock)
   );
 
   // Instantiate the draw_background module, which is
