@@ -1,4 +1,4 @@
-// File: dff.v - data flip flop module
+// File: dff_hs_vs.v - data flip flop module
 
 // The `timescale directive specifies what the
 // simulation time units are (1 ns here) and what
@@ -9,29 +9,25 @@
 // Declare the module and its ports. This is
 // using Verilog-2001 syntax.
 
-module dff (
+module dff_hs_vs (
     input wire pclk,                                  // Peripheral Clock
     input wire rst,                                   // Synchrous reset
 
-    input wire [11:0] xpos_in,
-    input wire [11:0] ypos_in,
-    input wire left_in,
+    input wire hs_in,
+    input wire vs_in,
 
-    output reg [11:0] xpos_out,
-    output reg [11:0] ypos_out,
-    output reg left_out
+    output reg hs_out,
+    output reg vs_out
 );
 
     always @(posedge pclk) begin
         if(rst) begin
-            xpos_out <= 12'b0;
-            ypos_out <= 12'b0;
-            left_out <= 12'b0;
+            hs_out <= 12'b0;
+            vs_out <= 12'b0;
         end
         else begin
-            xpos_out <= xpos_in;
-            ypos_out <= ypos_in;
-            left_out <= left_in;
+            hs_out <= hs_in;
+            vs_out <= vs_in;
         end        
     end  
 endmodule

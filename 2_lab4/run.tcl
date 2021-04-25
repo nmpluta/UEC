@@ -54,6 +54,8 @@ read_verilog {
 
     src/image_rom.v
     src/dff_image.v
+    src/draw_rect_ctl.v
+    src/dff_hs_vs.v
 }
 
 read_vhdl {

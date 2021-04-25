@@ -98,12 +98,12 @@ module vga_example (
   );
 
   // lock_reset 
-  wire rst_lock;
+  wire rst_out;
 
   lock_reset my_lock_reset(
     .lowest_freq_clk(pclk),
     .locked(locked),
-    .rst_out(rst_lock)
+    .rst_out(rst_out)
   );
   
   // Instantiate the vga_timing module, which is
@@ -122,7 +122,7 @@ module vga_example (
     .hblnk(hblnk),
 
     .pclk(pclk),
-    .rst(rst_lock)
+    .rst(rst_out)
   );
 
   // Instantiate the draw_background module, which is
@@ -158,6 +158,7 @@ module vga_example (
   // Instantiate the MouseCtl module, which is
   // the module you are using for this lab.
   wire [11:0] xpos_m, ypos_m;
+  wire left;
 
   MouseCtl my_MouseCtl(
     .clk(mouse_clk),
@@ -166,12 +167,14 @@ module vga_example (
     .ps2_data(ps2_data),
 
     .xpos(xpos_m),
-    .ypos(ypos_m)
+    .ypos(ypos_m),
+    .left(left)
   );
 
   // Instantiate the dff (data flip flip) module, which is
   // the module you are designing for this lab.
   wire [11:0] xpos_dff, ypos_dff;
+  wire left_dff;
 
   dff my_dff(
     .pclk(pclk),
@@ -179,9 +182,29 @@ module vga_example (
 
     .xpos_in(xpos_m),
     .ypos_in(ypos_m),
+    .left_in(left),
+
     .xpos_out(xpos_dff),
-    .ypos_out(ypos_dff)
+    .ypos_out(ypos_dff),
+    .left_out(left_dff)
   );
+
+  // Instantiate the draw_rect_ctl module, which is
+  // the module you are designing for this lab.
+  wire [11:0] xpos_ctl, ypos_ctl;
+
+  draw_rect_ctl my_draw_rect_ctl(
+    //inputs
+    .pclk(pclk),
+    .rst(rst_out),
+    .mouse_left(left_dff),
+    .mouse_xpos(xpos_dff),
+    .mouse_ypos(ypos_dff),
+    //outputs
+    .xpos(xpos_ctl),
+    .ypos(ypos_ctl)
+  );
+
 
   // Instantiate the draw_react module, which is
   // the module you are designing for this lab.
@@ -195,9 +218,9 @@ module vga_example (
     .pclk(pclk),
     .rst(rst_out),
 
-    // input x, y position of the mouse through dff
-    .xpos(xpos_dff),
-    .ypos(ypos_dff),
+    // input x, y position of the mouse through draw_Rect_ctl
+    .xpos(xpos_ctl),
+    .ypos(ypos_ctl),
 
     //input
     .vcount_in(vcount_b),
@@ -219,6 +242,18 @@ module vga_example (
     .rgb_out(rgb_r),
     .pixel_addr(pixel_addr)
   );
+
+  wire hsync_dff, vsync_dff;
+
+  dff_hs_vs my_dff_hs_vs (
+    .pclk(pclk),
+    .rst(rst_out),
+    .hs_in(hsync_r),
+    .vs_in(vsync_r),
+    .hs_out(hsync_dff),
+    .vs_out(vsync_dff)
+  );
+    
 
   // Instantiate the image_rom module, which is
   // the module you are using for this lab.
@@ -251,8 +286,8 @@ module vga_example (
   );
 
     // Just pass these through.
-    assign hs = hsync_r;
-    assign vs = vsync_r;
+    assign hs = hsync_dff;
+    assign vs = vsync_dff;
     assign r  = rgb_red;
     assign g  = rgb_green;
     assign b  = rgb_blue;
