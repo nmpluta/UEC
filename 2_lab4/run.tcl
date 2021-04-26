@@ -67,6 +67,8 @@ read_vhdl {
 add_files -fileset sim_1 {
     sim/testbench.v
     sim/tiff_writer.v
+    sim/draw_rect_ctl_tb.v
+    sim/draw_rect_ctl_test.v
 }
 
 set_property top ${top_module} [current_fileset]
@@ -75,8 +77,7 @@ update_compile_order -fileset sim_1
 
 if {[lindex $argv 0] == "simulation"} {
     launch_simulation
-    add_wave {{/testbench/my_example/my_clk_wiz_0}} 
-    add_wave {{/testbench/my_example}} 
+    add_wave {{/draw_rect_ctl_test/my_draw_rect_ctl}} 
     start_gui
 } else {
     launch_runs synth_1 -jobs 8
